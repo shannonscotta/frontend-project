@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="config.js"></script>
+    <script src="main.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar-navigation"></div>
+        <div class="main-info-container">
+            <form class="city-input-container">
+                <input type="text" name='search' id="userCity" placeholder="Search for cities">
+            </form>
+            <div class="main-weather-card">
+                <div class="mwc-left">
+                    <div class="city-name"></div>
+                    <div class="main-description"></div>
+                    <div class="main-temperature"></div>
+                </div>
+                <div class="mwc-right">
+                    <img class="main-image" />
+                </div>
+            </div>
+            <div class="todays-forecast">
+                <div class="tf-header">TODAYS FORECAST</div>
+            </div>
+            <div class="air-conditions">
+                <div class="ac-header">AIR CONDITIONS</div>
+                <div class="ac-top-left">
+                </div>
+                <div class="ac-top-right">
+                </div>
+                <div class="ac-bottom-left">
+                </div>
+                <div class="ac-bottom-right">
+                </div>
+            </div>
+        </div>
+        <div class="week-forecast-container">
+            <div class="wf-header"> 7-DAY FORECAST </div>
+        </div>
+    </div>
+</body>
+
+</html>
