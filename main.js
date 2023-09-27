@@ -11,6 +11,10 @@ const acTopRight = document.querySelector(".ac-top-right");
 const acBottomLeft = document.querySelector(".ac-bottom-left");
 const acBottomRight = document.querySelector(".ac-bottom-right");
 
+const tfContainer = document.querySelector(".tf-item-container");
+
+
+
 // const weekContainer = document.querySelector(".week-forecast-container");
 
 // const weekArr = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
@@ -55,51 +59,115 @@ function requestWeather(api, city, KEY, units) {
   $.get({
     url: `${api}?q=${city}&appid=${KEY}&${units}`,
     success: (data) => {
-      console.log("data", data);
+      // get weather data in a good format
 
-      // AC "chance of rain"
+
+
+
+
+      let weatherArr = [];
+
+      for (let timeObj of data.list) {
+        let weatherObj = {};
+
+        let date = timeObj.dt_txt.slice(5, 10);
+        let hour = timeObj.dt_txt.slice(11, 16);
+        let description = timeObj.weather[0].description;
+        let temp = timeObj.main["temp"];
+
+        weatherObj["date"] = date;
+        weatherObj["time"] = hour;
+        weatherObj["description"] = description;
+        weatherObj["temp"] = `${celsiusToFarenheit(temp)}°`;
+
+        weatherArr.push(weatherObj);
+      }
+
+      console.log("weatherArr", weatherArr);
+
+      //todays forecast: items
+      let todaysForecastArr = weatherArr.slice(0, 6);
+      
+      for (let tfObj of todaysForecastArr){
+        let tfItem = document.createElement('div');
+        tfItem.classList = 'tf-item';
+
+        let testing = tfObj.description;
+
+        //TODO:// WHY ARE YOU UNDEFINED
+        if (testing){
+            console.log(getWeatherImage(testing) )
+        }
+        // console.log(testing)
+        // console.log(getWeatherImage(testing))
+
+        tfItem.textContent = `${militaryToNormalTime(tfObj.time)}`;
+
+        let tfItemImage = document.createElement('a');
+
+       
+
+        // if (tfObj.description){
+        //     tfItemImage.src = `${getWeatherImage(tfObj.description)}`;
+        //     tfItem.appendChild(tfItemImage); 
+        //     console.log(tfItemImage.src)
+        // }
+       
+
+      
+
+        //TODO:// creating duplicates, rethink how this is done
+        tfContainer.appendChild(tfItem)
+
+
+
+        // console.log('sdaf', tfObj)
+      }
+
+
+
+      //main weather: city
+      cityNameDiv.textContent = `${data["city"].name}, ${data["city"].country}`;
+
+      //main weather: temp
+      let currentTemp = data.list[0].main["temp"];
+      mainTemp.textContent = `${celsiusToFarenheit(currentTemp)}°`;
+
+      //main weather: description
+      let currentDescription = data.list[0].weather[0].description;
+      mainDescription.textContent = capitalizeFirstLetter(currentDescription);
+
+      //main weather: image
+      if (currentDescription) {
+        getWeatherImage(currentDescription);
+      }
+
+
+
+
+      //Air Conditions: chance of rain
       let chanceOfRain = data.list[0].pop;
       acBottomLeft.innerHTML = `<img src="icons/rain-drop.svg" alt="rain icon"/> Chance of rain<p>${
         chanceOfRain * 100
       }%</p>`;
 
-      //AC "feels like"
+      //Air Conditions: feels like
       let feelsLike = data.list[0].main["feels_like"];
-      if (feelsLike > 0){
+      if (feelsLike > 0) {
         acTopLeft.innerHTML = `<img src="icons/thermostat.svg" alt="thermostat icon"/> Real feel <p>${celsiusToFarenheit(
           feelsLike
         )}°</p>`;
       }
-     
-      //AC "wind"
+
+      //Air Conditions: wind
       let windSpeed = data.list[0].wind["speed"];
       acTopRight.innerHTML = `<img src="icons/wind.svg" alt="wind icon"/> Wind <p>${convertKPHtoMPH(
         windSpeed
       )} mph </p>`;
 
-      //AC "humidity"
+      //Air Conditions: humidity
       let humidity = data.list[0].main["humidity"];
       acBottomRight.innerHTML = `<img src="icons/humidity.svg" alt="humidity icon"/> Humidity <p>${humidity}%</p>`;
-
-
-
-      //display city and country
-      cityNameDiv.textContent = `${data["city"].name}, ${data["city"].country}`;
-
-      //get and display temp
-      let currentTemp = data.list[0].main["temp"];
-      mainTemp.textContent = `${celsiusToFarenheit(currentTemp)}°`;
-
-      //get and display description
-      let currentDescription = data.list[0].weather[0].description;
-      mainDescription.textContent = capitalizeFirstLetter(currentDescription);
-
-      // paint main weather image
-      img.src = "images/sun.png";
-
-      if (currentDescription) {
-        getWeatherImage(currentDescription);
-      }
     },
   });
 }
@@ -151,3 +219,54 @@ function convertKPHtoMPH(kph) {
   let result = kph * 0.6214;
   return Math.round(result);
 }
+
+// function convertTime(string){
+
+    
+//     let hours = string.slice(0, 2);
+
+//     let isEvening = (hours >= 12);
+
+
+//     if (hours == 0 ) hours == 12;
+
+//     let mafs = (hours < 12) ? hours :  hours -= 12;
+    
+//     return `${hours}:00 ${isEvening ? 'PM' : 'AM'}`
+
+//     // if (string.slice(0, 2) == '12'){
+//     //     return `${string} PM`;
+//     // } else if (string[0] == 0){
+//     //     return `${string.slice(1)} AM`;
+//     // } else if (string[0] == 1 && string[1] != 2){
+//     //     string = string.slice(1);
+//     //     return `${string[0] - 2}${string.slice(1)} PM`
+//     // } else {
+//     //     console.log(string, 'check the string passed in convert time.. somethings wrong.')
+//     // }
+// }
+
+function militaryToNormalTime(militaryTime) {
+    
+    // Split the military time into hours
+    const hours = parseInt(militaryTime, 10);
+  
+    // Determine whether it's AM or PM
+    const period = (hours < 12) ? 'AM' : 'PM';
+  
+    // Handle the special case of midnight (00:00)
+    if (hours === 0) return '12:00 AM';
+    
+    // Convert hours to 12-hour format
+    let clockHours = hours;
+    
+    if (hours >= 13) {
+        clockHours -= 12;
+    }
+  
+    // Format the time in normal time format
+    const normalTime = clockHours + ':00 ' + period;
+  
+    return normalTime;
+  }
+

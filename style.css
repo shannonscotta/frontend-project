@@ -68,7 +68,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 96%;
-    height: 23%;
+    height: 25%;
     margin: 2em;
     margin-bottom: 1em;
     border-radius: 10px;
@@ -121,18 +121,45 @@ body {
 }
 
 .todays-forecast {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    height: 31.65%;
+    height: 30.5%;
     margin-top: 1em;
     margin-bottom: 1em;
     border-radius: 10px;
-    border: 1px solid var(--componentBG);
+    border: 1px solid black;
     background-color: var(--componentBG);
+}
+
+.todays-forecast > .tf-header {
+    /* background-color: green; */
+    width: 96%;
+    height: 1em;
+}
+
+.todays-forecast > .tf-item-container {
+    /* background-color: yellow; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* border: 1px solid black; */
+    width: 93%;
+    height: 63%;
+    margin: auto;
+    margin-bottom: 2em;
+}
+
+.tf-item-container > .tf-item {
+    text-align: center;
+    width: 12%;
+    height: 100%;
+    border: 1px solid black;
 }
 
 .air-conditions {
     width: 100%;
-    height: 31.65%;
+    height: 30.5%;
     margin-top: 1em;
     margin-bottom: 1em;
     border-radius: 10px;
