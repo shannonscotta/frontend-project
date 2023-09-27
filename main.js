@@ -2,7 +2,9 @@
 const form = document.getElementById("city-input-container");
 const cityNameDiv = document.querySelector(".city-name");
 const container = document.querySelector(".container");
-const img = document.querySelector("img");
+
+
+const mainImage = document.querySelector(".main-image");
 const mainTemp = document.querySelector(".main-temperature");
 const mainDescription = document.querySelector(".main-description");
 
@@ -64,74 +66,57 @@ function requestWeather(api, city, KEY, units) {
 
 
 
-
+ /* -----------------------------------------Create easy to work with weather array from JSON-------------------------------------------------------------*/
       let weatherArr = [];
 
       for (let timeObj of data.list) {
         let weatherObj = {};
 
         let date = timeObj.dt_txt.slice(5, 10);
-        let hour = timeObj.dt_txt.slice(11, 16);
+        let time = timeObj.dt_txt.slice(11, 16);
         let description = timeObj.weather[0].description;
         let temp = timeObj.main["temp"];
 
         weatherObj["date"] = date;
-        weatherObj["time"] = hour;
+        weatherObj["time"] = time;
         weatherObj["description"] = description;
-        weatherObj["temp"] = `${celsiusToFarenheit(temp)}°`;
+        weatherObj["temp"] = `${celsiusToFahrenheit(temp)}°`;
 
         weatherArr.push(weatherObj);
       }
 
-      console.log("weatherArr", weatherArr);
 
-      //todays forecast: items
-      let todaysForecastArr = weatherArr.slice(0, 6);
-      
-      for (let tfObj of todaysForecastArr){
-        let tfItem = document.createElement('div');
-        tfItem.classList = 'tf-item';
-
-        let testing = tfObj.description;
-
-        //TODO:// WHY ARE YOU UNDEFINED
-        if (testing){
-            console.log(getWeatherImage(testing) )
-        }
-        // console.log(testing)
-        // console.log(getWeatherImage(testing))
-
-        tfItem.textContent = `${militaryToNormalTime(tfObj.time)}`;
-
-        let tfItemImage = document.createElement('a');
-
-       
-
-        // if (tfObj.description){
-        //     tfItemImage.src = `${getWeatherImage(tfObj.description)}`;
-        //     tfItem.appendChild(tfItemImage); 
-        //     console.log(tfItemImage.src)
-        // }
-       
 
       
+/* ----------------------------------------- Append todays forecast items to todays forecast card-------------------------------------------------------------*/
 
-        //TODO:// creating duplicates, rethink how this is done
-        tfContainer.appendChild(tfItem)
+      // remove all tf items before appending new ones 
+      removeAllChildren(tfContainer);
+      
+      //grab the next 6 entries of weather data
+      for (let i = 0; i < 6; i++){
 
+        let tfObj = weatherArr[i]
+   
+         let tfItem = document.createElement('div');
+         tfItem.classList = 'tf-item';
 
-
-        // console.log('sdaf', tfObj)
+       //add time, image, and temp to tf item
+       tfItem.innerHTML = `${militaryToNormalTime(tfObj.time)} <img src="${getWeatherImage(tfObj.description)}" alt="weather icon" class="tf-image"/> <p>${
+         tfObj.temp
+       }</p>`;
+       
+       tfContainer.appendChild(tfItem)
       }
 
 
-
+      /* -----------------------------------------Main weather data-------------------------------------------------------------*/
       //main weather: city
       cityNameDiv.textContent = `${data["city"].name}, ${data["city"].country}`;
 
       //main weather: temp
       let currentTemp = data.list[0].main["temp"];
-      mainTemp.textContent = `${celsiusToFarenheit(currentTemp)}°`;
+      mainTemp.textContent = `${celsiusToFahrenheit(currentTemp)}°`;
 
       //main weather: description
       let currentDescription = data.list[0].weather[0].description;
@@ -139,11 +124,10 @@ function requestWeather(api, city, KEY, units) {
 
       //main weather: image
       if (currentDescription) {
-        getWeatherImage(currentDescription);
+        mainImage.src = getWeatherImage(currentDescription);
       }
 
-
-
+     /* -----------------------------------------Air conditions card-------------------------------------------------------------*/
 
       //Air Conditions: chance of rain
       let chanceOfRain = data.list[0].pop;
@@ -154,7 +138,7 @@ function requestWeather(api, city, KEY, units) {
       //Air Conditions: feels like
       let feelsLike = data.list[0].main["feels_like"];
       if (feelsLike > 0) {
-        acTopLeft.innerHTML = `<img src="icons/thermostat.svg" alt="thermostat icon"/> Real feel <p>${celsiusToFarenheit(
+        acTopLeft.innerHTML = `<img src="icons/thermostat.svg" alt="thermostat icon"/> Real feel <p>${celsiusToFahrenheit(
           feelsLike
         )}°</p>`;
       }
@@ -172,7 +156,7 @@ function requestWeather(api, city, KEY, units) {
   });
 }
 
-function celsiusToFarenheit(celsius) {
+function celsiusToFahrenheit(celsius) {
   let result = celsius * 1.8 + 32;
   return Math.round(result);
 }
@@ -187,31 +171,30 @@ function getWeatherImage(description) {
 
   switch (true) {
     case description.includes("snow"):
-      img.src = "images/cloud-snow.png";
-      break;
+      return "images/cloud-snow.png";
     case (description.includes("lightning") ||
       description.includes("thunder")) &&
       description.includes("rain"):
-      img.src = "images/cloud-lightning-rain.png";
-      break;
+      return "images/cloud-lightning-rain.png";
+
     case description.includes("lightning") || description.includes("thunder"):
-      img.src = "images/cloud-lightning.png";
-      break;
+      return "images/cloud-lightning.png";
+
     case description.includes("sun") && description.includes("cloud"):
-      img.src = "images/sun-cloud.png";
-      break;
+      return "images/sun-cloud.png";
+
     case description.includes("rain"):
-      img.src = "images/cloud-rain.png";
-      break;
+      return "images/cloud-rain.png";
+
     case description.includes("cloud"):
-      img.src = "images/cloud.png";
-      break;
+      return "images/cloud.png";
+
     case description.includes("sun"):
-      img.src = "images/sun.png";
-      break;
+      return "images/sun.png";
+
     default:
-      console.log("potential error.... does the description match the image?");
-      return (img.src = "images/sun.png");
+      // console.log(`potential error.... does "${description}" match the image?\n`);
+      return "images/sun.png";
   }
 }
 
@@ -220,53 +203,24 @@ function convertKPHtoMPH(kph) {
   return Math.round(result);
 }
 
-// function convertTime(string){
-
-    
-//     let hours = string.slice(0, 2);
-
-//     let isEvening = (hours >= 12);
-
-
-//     if (hours == 0 ) hours == 12;
-
-//     let mafs = (hours < 12) ? hours :  hours -= 12;
-    
-//     return `${hours}:00 ${isEvening ? 'PM' : 'AM'}`
-
-//     // if (string.slice(0, 2) == '12'){
-//     //     return `${string} PM`;
-//     // } else if (string[0] == 0){
-//     //     return `${string.slice(1)} AM`;
-//     // } else if (string[0] == 1 && string[1] != 2){
-//     //     string = string.slice(1);
-//     //     return `${string[0] - 2}${string.slice(1)} PM`
-//     // } else {
-//     //     console.log(string, 'check the string passed in convert time.. somethings wrong.')
-//     // }
-// }
-
 function militaryToNormalTime(militaryTime) {
-    
-    // Split the military time into hours
-    const hours = parseInt(militaryTime, 10);
-  
-    // Determine whether it's AM or PM
-    const period = (hours < 12) ? 'AM' : 'PM';
-  
-    // Handle the special case of midnight (00:00)
-    if (hours === 0) return '12:00 AM';
-    
-    // Convert hours to 12-hour format
-    let clockHours = hours;
-    
-    if (hours >= 13) {
-        clockHours -= 12;
-    }
-  
-    // Format the time in normal time format
-    const normalTime = clockHours + ':00 ' + period;
-  
-    return normalTime;
-  }
+  // Split the military time into hours
+  const hours = parseInt(militaryTime, 10);
+  const period = hours < 12 ? "AM" : "PM";
 
+  // Handle the special case of midnight (00:00)
+  if (hours === 0) return "12:00 AM";
+
+  // Convert hours to 12-hour format
+  let clockHours = hours;
+
+  if (hours >= 13) clockHours -= 12;
+  
+  return  clockHours + ":00 " + period;
+}
+
+function removeAllChildren(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}

@@ -268,9 +268,16 @@ body {
     font-weight: 600;
 }
 
+.tf-image{
+    width:45px;
+    height: 45px;
+}
+
 .ac-header {
     margin: 1em;
     color: var(--grayText);
     font-weight: 600;
 }
+
+
 
