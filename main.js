@@ -1,8 +1,6 @@
-// const date = new Date();
 const form = document.getElementById("city-input-container");
 const cityNameDiv = document.querySelector(".city-name");
 const container = document.querySelector(".container");
-
 
 const mainImage = document.querySelector(".main-image");
 const mainTemp = document.querySelector(".main-temperature");
@@ -102,7 +100,7 @@ function requestWeather(api, city, KEY, units) {
          tfItem.classList = 'tf-item';
 
        //add time, image, and temp to tf item
-       tfItem.innerHTML = `${militaryToNormalTime(tfObj.time)} <img src="${getWeatherImage(tfObj.description)}" alt="weather icon" class="tf-image"/> <p>${
+       tfItem.innerHTML = `${militaryToNormalTime(tfObj.time)} <img src="${getWeatherImage(tfObj.description)}" alt="weather icon" class="tf-item-image"/> <p>${
          tfObj.temp
        }</p>`;
        
