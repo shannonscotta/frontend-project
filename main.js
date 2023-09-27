@@ -1,10 +1,10 @@
-const form = document.getElementById("city-input-container");
-const cityNameDiv = document.querySelector(".city-name");
-const container = document.querySelector(".container");
+const parentContainer = document.querySelector(".container");
 
-const mainImage = document.querySelector(".main-image");
-const mainTemp = document.querySelector(".main-temperature");
+const cityNameDiv = document.querySelector(".city-name");
 const mainDescription = document.querySelector(".main-description");
+const form = document.getElementById("city-input-container");
+const mainTemp = document.querySelector(".main-temperature");
+const mainImage = document.querySelector(".main-image");
 
 const acTopLeft = document.querySelector(".ac-top-left");
 const acTopRight = document.querySelector(".ac-top-right");
@@ -13,36 +13,13 @@ const acBottomRight = document.querySelector(".ac-bottom-right");
 
 const tfContainer = document.querySelector(".tf-item-container");
 
-
-
-// const weekContainer = document.querySelector(".week-forecast-container");
-
-// const weekArr = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
-
-// let currentDay = date.getDay();
-
-// for (let i = currentDay; i <= weekArr.length; i++){
-
-//   // let dayDiv = document.createElement('div');
-//   // dayDiv.classList = 'day-div';
-//   // dayDiv.textContent =  weekArr[i];
-
-//   i = i % weekArr.length;
-//   console.log('day   ', weekArr[i])
-
-//   // weekContainer.appendChild(dayDiv)
-// }
-
-// api and query string, key "hidden" in config file that is ignored.
-// You can still see the key in production through chrome dev tools in the Network tab
 let api = `https://api.openweathermap.org/data/2.5/forecast`;
 let city = "seattle";
 let KEY = config.WEATHER_KEY;
 let units = `units=metric`;
 
 // listen to user city input and render city if entered
-container.addEventListener("submit", (event) => {
-  // console.log(event.target, event.target[0]);
+parentContainer.addEventListener("submit", (event) => {
   let userCity = event.target[0].value;
 
   if (typeof userCity === "string") {
@@ -51,20 +28,18 @@ container.addEventListener("submit", (event) => {
   event.preventDefault();
 });
 
-// hoisted and calls seattle on initial render
+
+// calls seattle on initial render
 requestWeather(api, city, KEY, units);
 
-// gets weather upon user request, kept at bottom and hoisted
+// gets weather upon user request
 function requestWeather(api, city, KEY, units) {
   $.get({
     url: `${api}?q=${city}&appid=${KEY}&${units}`,
     success: (data) => {
       // get weather data in a good format
 
-
-
-
- /* -----------------------------------------Create easy to work with weather array from JSON-------------------------------------------------------------*/
+      /* -----------------------------------------Create weather array from JSON data-------------------------------------------------------------*/
       let weatherArr = [];
 
       for (let timeObj of data.list) {
@@ -83,30 +58,27 @@ function requestWeather(api, city, KEY, units) {
         weatherArr.push(weatherObj);
       }
 
+      /* ----------------------------------------- Append todays forecast items-------------------------------------------------------------*/
 
-
-      
-/* ----------------------------------------- Append todays forecast items to todays forecast card-------------------------------------------------------------*/
-
-      // remove all tf items before appending new ones 
+      // remove all tf items before appending new ones
       removeAllChildren(tfContainer);
-      
+
       //grab the next 6 entries of weather data
-      for (let i = 0; i < 6; i++){
+      for (let i = 0; i < 6; i++) {
+        let tfObj = weatherArr[i];
 
-        let tfObj = weatherArr[i]
-   
-         let tfItem = document.createElement('div');
-         tfItem.classList = 'tf-item';
+        let tfItem = document.createElement("div");
+        tfItem.classList = "tf-item";
 
-       //add time, image, and temp to tf item
-       tfItem.innerHTML = `${militaryToNormalTime(tfObj.time)} <img src="${getWeatherImage(tfObj.description)}" alt="weather icon" class="tf-item-image"/> <p>${
-         tfObj.temp
-       }</p>`;
-       
-       tfContainer.appendChild(tfItem)
+        //add time, image, and temp to tf item
+        tfItem.innerHTML = `${militaryToNormalTime(
+          tfObj.time
+        )} <img src="${getWeatherImage(
+          tfObj.description
+        )}" alt="weather icon" class="tf-item-image"/> <p>${tfObj.temp}</p>`;
+
+        tfContainer.appendChild(tfItem);
       }
-
 
       /* -----------------------------------------Main weather data-------------------------------------------------------------*/
       //main weather: city
@@ -125,7 +97,7 @@ function requestWeather(api, city, KEY, units) {
         mainImage.src = getWeatherImage(currentDescription);
       }
 
-     /* -----------------------------------------Air conditions card-------------------------------------------------------------*/
+      /* -----------------------------------------Air conditions card-------------------------------------------------------------*/
 
       //Air Conditions: chance of rain
       let chanceOfRain = data.list[0].pop;
@@ -153,6 +125,8 @@ function requestWeather(api, city, KEY, units) {
     },
   });
 }
+
+/* -----------------------------------------Helper functions-------------------------------------------------------------*/
 
 function celsiusToFahrenheit(celsius) {
   let result = celsius * 1.8 + 32;
@@ -213,8 +187,8 @@ function militaryToNormalTime(militaryTime) {
   let clockHours = hours;
 
   if (hours >= 13) clockHours -= 12;
-  
-  return  clockHours + ":00 " + period;
+
+  return clockHours + ":00 " + period;
 }
 
 function removeAllChildren(parent) {
