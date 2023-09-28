@@ -134,7 +134,7 @@ function requestWeather(api, city, KEY, units) {
 
       /* -----------------------------------------Weekly forecast card-------------------------------------------------------------*/
 
-      // get tf data
+     // create weekObj to store key info
 
       let weekObj = {
         Monday: { temp: [], description: [] },
@@ -146,82 +146,96 @@ function requestWeather(api, city, KEY, units) {
         Sunday: { temp: [], description: [] },
       };
 
-
       // get all info from 3 hour increments
       for (let i = 0; i < allWeatherArr.length; i++) {
+        let increment = allWeatherArr[i];
 
-        let increment = allWeatherArr[i];      
-   
         let day = increment.day;
         let minTemp = increment.minTemp;
         let maxTemp = increment.maxTemp;
         let description = increment.description;
 
-  
         weekObj[day].temp.push(minTemp, maxTemp);
         weekObj[day].description.push(description);
-
       }
-      
-      let validWeatherWords = ['rain','clouds', 'sun', 'clear', 'snow', 'thunder', 'lightning'];
-      
+
+      let validWeatherWords = [
+        "rain",
+        "clouds",
+        "sun",
+        "clear",
+        "snow",
+        "thunder",
+        "lightning",
+      ];
+
       // get daily info from bulk info
       for (const key in weekObj) {
-
         //get min and max for day
-       if (weekObj[key].temp.length >= 2) {
-         weekObj[key].temp = getMinAndMaxFromArr(weekObj[key].temp);
-       } else {
-        delete weekObj[key];
-       }
+        if (weekObj[key].temp.length >= 2) {
+          weekObj[key].temp = getMinAndMaxFromArr(weekObj[key].temp);
+        } else {
+          delete weekObj[key];
+        }
 
-        if (weekObj[key]){
-          
+        if (weekObj[key]) {
           let wordArr = stringArrToWordArr(weekObj[key].description);
           let validWordArr = filterStringArr(validWeatherWords, wordArr);
 
-          weekObj[key].description = countWordsInArr(validWordArr);
-          //  console.log(validWordArr)
-          //getKeyWithHighestVal func
-        }
-     
-      }
-      //get key with highestVal
+          //count weather words, then find key with highest val
+          let wordCount = countWordsInArr(validWordArr);
 
-console.log(weekObj)
-      //TODO:
-      // sort each weekObj.day temp and then save the min and max for later
-      // filter out filler words in description and then count each word occurance, what appears the most? save that for the day
-      // console.log(weekObj['Monday'].temp.sort());
+          weekObj[key].description = getKeyWithHighestVal(wordCount);
+        }
+      }
+
+   let wfDataObj = {...weekObj};
+
+console.log(wfDataObj)
+
 
 
 
       // TODO://
-
       // find out what day it is
-      // let today = new Date();
-      //will need to call getDayOfWeek(today) to figure out which day to start painting next
+      //will need to call getDayOfWeek(today) to figure out which day to start painting info
+      // let dateInstance = new Date();
+      // let today = getDayOfWeek(dateInstance);
+
 
 
 
       // grab wf container
       let wfContainer = document.querySelector(".week-forecast-container");
 
-      for (let i = 0; i <= 6; i++) {
+      // Prevent duplicates upon new searches
+      removeAllChildren(wfContainer);
+
+      // add wf header back
+      let wfHeader = document.createElement('div');
+      wfHeader.classList = 'wf-header';
+      wfHeader.innerText = '7-DAY FORECAST'
+
+      wfContainer.appendChild(wfHeader);
+
+      for (const key in wfDataObj){
+          let minTemp = wfDataObj[key].temp[0];
+          let maxTemp = wfDataObj[key].temp[1];
         //create wf item container
         let wfItem = document.createElement("div");
         wfItem.classList = "wf-item";
 
-        wfItem.innerHTML = `<div class="wf-day">Today</div>
+        wfItem.innerHTML = `<div class="wf-day">${key}</div>
   
         <div class="wf-image-container"> 
   
-        <img class="wf-item-image" src="images/cloud.png">&nbsp&nbsp Sunny
+        <img class="wf-item-image" src=${getWeatherImage(wfDataObj[key].description)}>&nbsp&nbsp ${capitalizeFirstLetter(wfDataObj[key].description)}
         </div>
   
-        <div class="wf-temp">36 / 22</div>`;
+        <div class="wf-temp">${minTemp} / ${maxTemp}</div>`;
 
         wfContainer.appendChild(wfItem);
+      
       }
     },
   });
