@@ -146,23 +146,51 @@ function requestWeather(api, city, KEY, units) {
         Sunday: { temp: [], description: [] },
       };
 
-      for (let i = 0; i < allWeatherArr.length; i++) {
-        let increment = allWeatherArr[i];
 
+      // get all info from 3 hour increments
+      for (let i = 0; i < allWeatherArr.length; i++) {
+
+        let increment = allWeatherArr[i];      
+   
         let day = increment.day;
         let minTemp = increment.minTemp;
         let maxTemp = increment.maxTemp;
         let description = increment.description;
 
+  
         weekObj[day].temp.push(minTemp, maxTemp);
         weekObj[day].description.push(description);
+
+      }
+      
+      let validWeatherWords = ['rain', 'rainy', 'raining', 'cloud', 'clouds', 'cloudy', 'sun', 'clear', 'snow', 'snowing', 'hail', 'thunder', 'lightning'];
+      
+      // get daily info from bulk info
+      for (const key in weekObj) {
+
+        //get min and max for day
+       if (weekObj[key].temp.length >= 2) {
+         weekObj[key].temp = getMinAndMaxFromArr(weekObj[key].temp);
+       } else {
+        delete weekObj[key];
+       }
+
+        if (weekObj[key]){
+          
+          let wordArr = stringArrToWordArr(weekObj[key].description);
+          let validWordArr = filterStringArr(validWeatherWords, wordArr);
+
+          weekObj[key].description = validWordArr;
+          //  console.log(validWordArr)
+        }
+     
       }
 
-
+console.log(weekObj)
       //TODO:
       // sort each weekObj.day temp and then save the min and max for later
       // filter out filler words in description and then count each word occurance, what appears the most? save that for the day
-      console.log(weekObj);
+      // console.log(weekObj['Monday'].temp.sort());
 
 
 
@@ -211,7 +239,7 @@ function capitalizeFirstLetter(string) {
 
 function getWeatherImage(description) {
   description = description.toLowerCase();
-
+//TODO:// ensure every option is in valid arr as well
   switch (true) {
     case description.includes("snow"):
       return "images/cloud-snow.png";
@@ -232,7 +260,7 @@ function getWeatherImage(description) {
     case description.includes("cloud"):
       return "images/cloud.png";
 
-    case description.includes("sun"):
+    case description.includes("sun") || description.includes("clear"):
       return "images/sun.png";
 
     default:
@@ -289,6 +317,70 @@ function getDayOfWeek(dateString) {
   return daysOfWeek[dayOfWeekIndex];
 }
 
+function getMinAndMaxFromArr(array) {
+  if (Array.isArray(array)) {
+    let copyArr = [...array];
+
+    copyArr.sort((a, b) => a - b);
+    copyArr = [copyArr[0], copyArr[copyArr.length - 1]];
+
+    return copyArr;
+  } else {
+    throw console.error(`${array} is not an array.`);
+  }
+}
+
+function stringArrToWordArr(stringArray) {
+  // ensure its an Array
+  if (!Array.isArray(stringArray)) {
+    return console.error(stringArray, "is not an array");
+  }
+
+  let copyArr = [...stringArray];
+  let splitCopy = [];
+
+  // split each string into words
+  for (const sentence of copyArr) {
+    const string = sentence.split(" ");
+
+    for (const word of string) {
+      splitCopy.push(word);
+    }
+  }
+
+  return splitCopy;
+}
+
+function filterStringArr(validArray, invalidArr){
+
+  let copyInvalidArr = [...invalidArr];
+
+  let filteredArr = copyInvalidArr.filter((word) => validArray.includes(word));
+
+  return filteredArr;
+  
+}
+
+function countWordsInArr(array){
+
+let copyArr = [...array];
+
+let countObj = {};
+
+for (let word of copyArr){
+
+  if (!countObj.hasOwnProperty(word)){
+    countObj[word] = 1;
+  } else {
+    countObj[word] += 1;
+  }
+  
+}
+return countObj;
+
+}
+
+console.log('??', countWordsInArr(['rain', 'rain', 'cloudy', 'sun', 'snow', 'cloud']))
 
 //TODO:// autocomplete for searching city!
 
@@ -312,3 +404,5 @@ function getDayOfWeek(dateString) {
 
 
       //TODO:// styling for air conditions
+
+      //TODO:// onhover scale 1.2 for tf svgs
