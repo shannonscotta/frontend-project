@@ -163,7 +163,7 @@ function requestWeather(api, city, KEY, units) {
 
       }
       
-      let validWeatherWords = ['rain', 'rainy', 'raining', 'cloud', 'clouds', 'cloudy', 'sun', 'clear', 'snow', 'snowing', 'hail', 'thunder', 'lightning'];
+      let validWeatherWords = ['rain','clouds', 'sun', 'clear', 'snow', 'thunder', 'lightning'];
       
       // get daily info from bulk info
       for (const key in weekObj) {
@@ -180,11 +180,13 @@ function requestWeather(api, city, KEY, units) {
           let wordArr = stringArrToWordArr(weekObj[key].description);
           let validWordArr = filterStringArr(validWeatherWords, wordArr);
 
-          weekObj[key].description = validWordArr;
+          weekObj[key].description = countWordsInArr(validWordArr);
           //  console.log(validWordArr)
+          //getKeyWithHighestVal func
         }
      
       }
+      //get key with highestVal
 
 console.log(weekObj)
       //TODO:
@@ -239,20 +241,10 @@ function capitalizeFirstLetter(string) {
 
 function getWeatherImage(description) {
   description = description.toLowerCase();
-//TODO:// ensure every option is in valid arr as well
+
   switch (true) {
-    case description.includes("snow"):
-      return "images/cloud-snow.png";
-    case (description.includes("lightning") ||
-      description.includes("thunder")) &&
-      description.includes("rain"):
-      return "images/cloud-lightning-rain.png";
-
-    case description.includes("lightning") || description.includes("thunder"):
-      return "images/cloud-lightning.png";
-
-    case description.includes("sun") && description.includes("cloud"):
-      return "images/sun-cloud.png";
+    case description.includes("sun") || description.includes("clear"):
+      return "images/sun.png";
 
     case description.includes("rain"):
       return "images/cloud-rain.png";
@@ -260,11 +252,16 @@ function getWeatherImage(description) {
     case description.includes("cloud"):
       return "images/cloud.png";
 
-    case description.includes("sun") || description.includes("clear"):
-      return "images/sun.png";
+    case description.includes("lightning") || description.includes("thunder"):
+      return "images/cloud-lightning.png";
+
+    case description.includes("snow"):
+      return "images/cloud-snow.png";
 
     default:
-      // console.log(`potential error.... does "${description}" match the image?\n`);
+      console.error(
+        `potential error.... does "${description}" match the image?\n`
+      );
       return "images/sun.png";
   }
 }
@@ -380,7 +377,24 @@ return countObj;
 
 }
 
-console.log('??', countWordsInArr(['rain', 'rain', 'cloudy', 'sun', 'snow', 'cloud']))
+function getKeyWithHighestVal(obj) {
+  let maxKey;
+  let maxValue;
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const value = obj[key];
+      if (typeof value === "number") {
+        if (maxKey === undefined || value > maxValue) {
+          maxKey = key;
+          maxValue = value;
+        }
+      }
+    }
+  }
+
+  return maxKey;
+}
 
 //TODO:// autocomplete for searching city!
 
