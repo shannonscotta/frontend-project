@@ -1,5 +1,5 @@
 # Frontend-project
-https://shannonscotta.github.io/frontend-project/
+hosted @ https://shannonscotta.github.io/frontend-project/
 
 Frontend project using Vanilla JS, event listeners, and AJAX
 
