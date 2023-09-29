@@ -10,7 +10,7 @@ const tfContainer = document.querySelector(".tf-item-container");
 
 let api = `https://api.openweathermap.org/data/2.5/forecast`;
 let city = "seattle";
-let KEY = config.WEATHER_KEY;
+let KEY = WEATHER_KEY;
 let units = `units=metric`;
 
 // listen to user city input and render city if entered
