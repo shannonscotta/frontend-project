@@ -27,6 +27,8 @@ body {
     border-radius: 25px;
 }
 
+/* ---------------------------sidebar nav --------------------------- */
+
 .sidebar-navigation {
     height: 93%;
     width: 100px;
@@ -36,6 +38,26 @@ body {
     background-color: var(--componentBG);
 }
 
+.sb-weather-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sb-weather-icon {
+    margin: auto;
+    margin-top: 2em;
+    height: 45px;
+    width: 45px;
+}
+
+.sb-weather-text {
+    text-align: center;
+    font-weight: 600;
+    color: var(--grayText);
+}
+
+/* ---------------------------main display --------------------------- */
 .main-info-container {
     margin: 2em;
     margin-left: 1em;
@@ -131,22 +153,18 @@ body {
     margin-top: 1em;
     margin-bottom: 1em;
     border-radius: 10px;
-    /* border: 1px solid black; */
     background-color: var(--componentBG);
 }
 
 .todays-forecast>.tf-header {
-    /* background-color: green; */
     width: 96%;
     height: 1em;
 }
 
 .todays-forecast>.tf-item-container {
-    /* background-color: yellow; */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* border: 1px solid black; */
     width: 93%;
     height: 63%;
     margin: auto;
@@ -163,8 +181,8 @@ body {
     font-weight: 600;
 }
 
-.tf-item-container > .tf-item:nth-child(5){
-   border-right: none;
+.tf-item-container>.tf-item:nth-child(5) {
+    border-right: none;
 }
 
 .tf-item-container>.tf-item:last-child {
@@ -190,6 +208,7 @@ body {
     width: 45px;
     height: 45px;
 }
+
 /* ---------------------------air conditions --------------------------- */
 
 .air-conditions {
@@ -214,7 +233,6 @@ body {
     margin-left: 1.6em;
     border-radius: 10px;
     float: left;
-    /* background-color: yellow; */
     width: 45%;
     height: 40%;
 }
@@ -223,7 +241,7 @@ body {
     font-size: x-large;
     color: black;
     font-weight: 600;
-    margin-left: 1em;
+    margin-left: 1.5em;
     line-height: 1px;
 }
 
@@ -232,7 +250,6 @@ body {
     margin-right: 1.6em;
     border-radius: 10px;
     float: right;
-    /* background-color: orange; */
     width: 45%;
     height: 40%;
 }
@@ -241,7 +258,7 @@ body {
     font-size: x-large;
     color: black;
     font-weight: 600;
-    margin-left: 1em;
+    margin-left: 1.5em;
     line-height: 1px;
 }
 
@@ -250,7 +267,6 @@ body {
     margin-left: 1.6em;
     border-radius: 10px;
     float: left;
-    /* background-color: green; */
     width: 45%;
     height: 30%;
 }
@@ -259,7 +275,7 @@ body {
     font-size: x-large;
     color: black;
     font-weight: 600;
-    margin-left: 1em;
+    margin-left: 1.5em;
     line-height: 1px;
 }
 
@@ -276,20 +292,27 @@ body {
     font-size: x-large;
     color: black;
     font-weight: 600;
-    margin-left: 1em;
+    margin-left: 1.5em;
     line-height: 1px;
+}
+
+.ac-svg-word-container {
+    width: 9em;
+    height: 40px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
 }
 
 /* ---------------------------week forecast --------------------------- */
 
 .week-forecast-container {
-    display:flex;
+    display: flex;
     margin: 2em;
     margin-top: 4em;
     margin-left: 1em;
     height: 85%;
     width: 30%;
-    /* border: 1px solid black; */
     align-self: flex-end;
     background-color: var(--componentBG);
     border-radius: 20px;
@@ -303,16 +326,13 @@ body {
     margin-top: 2em;
     margin-bottom: 1em;
     color: var(--grayText);
-    /* background-color: purple; */
     font-weight: 600;
-    /* border: 1px solid black; */
     width: 85%;
 }
 
 .wf-item {
     display: flex;
     justify-content: space-between;
-    /* margin: auto; */
     border-bottom: 1px solid var(--divider);
     width: 85%;
     height: 15%;
@@ -320,47 +340,47 @@ body {
 
 .wf-image-container {
     display: flex;
-    align-items:center;
+    align-items: center;
     justify-content: left;
-    /* background-color: yellow; */
-    height:100%;
-    width:45%;
-    /* text-align: center; */
+    height: 100%;
+    width: 45%;
     font-size: large;
     font-weight: 600;
     color: black;
 }
 
 .wf-day {
-    height:100%;
+    height: 100%;
     width: 35%;
     display: flex;
-    align-items:center;
+    align-items: center;
     justify-content: left;
-    /* background-color: orange; */
     font-size: medium;
     font-weight: 600;
     color: var(--grayText);
 }
 
 .wf-temp {
-    height:100%;
+    height: 100%;
     width: 25%;
     display: flex;
-    align-items:center;
+    align-items: center;
     justify-content: left;
-    /* background-color: green; */
     font-size: medium;
     font-weight: 600;
-    color: black;
+    color: var(--grayText);
 }
 
-.wf-item:last-child{
+.wf-temp-max {
+    color: black;
+    margin-right: 4px;
+}
+
+.wf-item:last-child {
     border-bottom: none;
 }
 
-.wf-item-image{
-
+.wf-item-image {
     width: 40px;
     height: 40px;
 }

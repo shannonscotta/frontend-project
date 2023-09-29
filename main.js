@@ -10,7 +10,7 @@ const tfContainer = document.querySelector(".tf-item-container");
 
 let api = `https://api.openweathermap.org/data/2.5/forecast`;
 let city = "seattle";
-let KEY = config.WEATHER_KEY;
+let KEY = `d38f70722a87cf8c82816aeaa8078875`;
 let units = `units=metric`;
 
 // listen to user city input and render city if entered
@@ -104,16 +104,16 @@ function requestWeather(api, city, KEY, units) {
 
       let feelsLike = data.list[0].main["feels_like"];
       if (feelsLike > 0) {
-        acTopLeft.innerHTML = `<img src="icons/thermostat.svg" alt="thermostat icon"/> Real feel <p>${celsiusToFahrenheit(
+        acTopLeft.innerHTML = `<div class="ac-svg-word-container"> <img src="icons/thermostat.svg" alt="thermostat icon"/> &nbsp Real feel </div><p>${celsiusToFahrenheit(
           feelsLike
-        )}°</p>`;
+        )}°</p> `;
       }
 
       //Air Conditions: wind
       const acTopRight = document.querySelector(".ac-top-right");
 
       let windSpeed = data.list[0].wind["speed"];
-      acTopRight.innerHTML = `<img src="icons/wind.svg" alt="wind icon"/> Wind <p>${convertKPHtoMPH(
+      acTopRight.innerHTML = `<div class="ac-svg-word-container"> <img src="icons/wind.svg" alt="wind icon"/> &nbsp Wind  </div><p>${convertKPHtoMPH(
         windSpeed
       )} mph </p>`;
 
@@ -121,15 +121,15 @@ function requestWeather(api, city, KEY, units) {
       const acBottomLeft = document.querySelector(".ac-bottom-left");
 
       let chanceOfRain = data.list[0].pop;
-      acBottomLeft.innerHTML = `<img src="icons/rain-drop.svg" alt="rain icon"/> Chance of rain<p>${
+      acBottomLeft.innerHTML = `<div class="ac-svg-word-container"><img src="icons/rain-drop.svg" alt="rain icon"/> &nbsp Chance of rain</div><p>${
         chanceOfRain * 100
-      }%</p>`;
+      }%</p> `;
 
       //Air Conditions: humidity
       const acBottomRight = document.querySelector(".ac-bottom-right");
 
       let humidity = data.list[0].main["humidity"];
-      acBottomRight.innerHTML = `<img src="icons/humidity.svg" alt="humidity icon"/> Humidity <p>${humidity}%</p>`;
+      acBottomRight.innerHTML = `<div class="ac-svg-word-container"><img src="icons/humidity.svg" alt="humidity icon"/> &nbsp Humidity </div><p>${humidity}%</p>`;
 
       /* -----------------------------------------Weekly forecast card-------------------------------------------------------------*/
 
@@ -225,7 +225,10 @@ function requestWeather(api, city, KEY, units) {
         )}>&nbsp&nbsp ${capitalizeFirstLetter(wfDataObj[key].description)}
         </div>
   
-        <div class="wf-temp">${maxTemp}° / ${minTemp}°</div>`;
+        <div class="wf-temp">
+        
+        <div class="wf-temp-max"> ${maxTemp} </div>
+        / ${minTemp}</div>`;
 
         wfContainer.appendChild(wfItem);
       }
@@ -437,46 +440,4 @@ function sortObjectByOrderStartingFromToday(obj) {
   return sortedObj;
 }
 
-let testObj = {
-  Monday: 0,
-  Friday: 1,
-  Thursday: 0,
-  Tuesday: 1,
-  Saturday: 0,
-  Wednesday: 2,
-  Sunday: 3,
-};
-
-// console.log('I am', sortObjectByOrderStartingFromToday(testObj))
-
-// TODO://
-// find out what day it is
-//will need to call getDayOfWeek(today) to figure out which day to start painting info
-// let dateInstance = new Date();
-// let today = getDayOfWeek(dateInstance);
-
-// console.log(organizeKeysFromToday(wfDataObj))
-
-//TODO:// autocomplete for searching city!
-
-//TODO:// center the air condition icon and word
-
-//TODO:// implement geolocation?
-// if (navigator.geolocation) {
-//   navigator.geolocation.getCurrentPosition(function(position) {
-//     const latitude = position.coords.latitude;
-//     const longitude = position.coords.longitude;
-//     console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-//   });
-// } else {
-//   console.log("Geolocation is not supported by this browser.");
-// }
-
-//TODO:// Reverse geocoding to get city name by lat and long
-
-// 7 day api?
-//
-
-//TODO:// styling for air conditions
-
-//TODO:// onhover scale 1.2 for tf svgs
+//TODO:// autocomplete for searching city
