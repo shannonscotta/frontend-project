@@ -10,7 +10,7 @@ const tfContainer = document.querySelector(".tf-item-container");
 
 let api = `https://api.openweathermap.org/data/2.5/forecast`;
 let city = "seattle";
-let KEY = WEATHER_KEY;
+let KEY = config.WEATHER_KEY;
 let units = `units=metric`;
 
 // listen to user city input and render city if entered
@@ -22,7 +22,6 @@ parentContainer.addEventListener("submit", (event) => {
   }
   event.preventDefault();
 });
-
 
 // calls seattle on initial render
 requestWeather(api, city, KEY, units);
@@ -134,7 +133,7 @@ function requestWeather(api, city, KEY, units) {
 
       /* -----------------------------------------Weekly forecast card-------------------------------------------------------------*/
 
-     // create weekObj to store key info
+      // create weekObj to store key info
 
       let weekObj = {
         Monday: { temp: [], description: [] },
@@ -189,21 +188,12 @@ function requestWeather(api, city, KEY, units) {
         }
       }
 
-   let wfDataObj = {...weekObj};
+      //sort object by day before appending to the DOM
+      let wfDataObj = sortObjectByOrderStartingFromToday(weekObj);
 
-console.log(wfDataObj)
-
-
-
-
-      // TODO://
-      // find out what day it is
-      //will need to call getDayOfWeek(today) to figure out which day to start painting info
-      // let dateInstance = new Date();
-      // let today = getDayOfWeek(dateInstance);
-
-
-
+      //  if (wfDataObj['Monday']){
+      //   delete wfDataObj['Monday'];
+      //  }
 
       // grab wf container
       let wfContainer = document.querySelector(".week-forecast-container");
@@ -212,15 +202,16 @@ console.log(wfDataObj)
       removeAllChildren(wfContainer);
 
       // add wf header back
-      let wfHeader = document.createElement('div');
-      wfHeader.classList = 'wf-header';
-      wfHeader.innerText = '7-DAY FORECAST'
+      let wfHeader = document.createElement("div");
+      wfHeader.classList = "wf-header";
+      wfHeader.innerText = "FUTURE FORECAST";
 
       wfContainer.appendChild(wfHeader);
 
-      for (const key in wfDataObj){
-          let minTemp = wfDataObj[key].temp[0];
-          let maxTemp = wfDataObj[key].temp[1];
+      for (const key in wfDataObj) {
+        let minTemp = wfDataObj[key].temp[0];
+        let maxTemp = wfDataObj[key].temp[1];
+
         //create wf item container
         let wfItem = document.createElement("div");
         wfItem.classList = "wf-item";
@@ -229,13 +220,21 @@ console.log(wfDataObj)
   
         <div class="wf-image-container"> 
   
-        <img class="wf-item-image" src=${getWeatherImage(wfDataObj[key].description)}>&nbsp&nbsp ${capitalizeFirstLetter(wfDataObj[key].description)}
+        <img class="wf-item-image" src=${getWeatherImage(
+          wfDataObj[key].description
+        )}>&nbsp&nbsp ${capitalizeFirstLetter(wfDataObj[key].description)}
         </div>
   
-        <div class="wf-temp">${minTemp} / ${maxTemp}</div>`;
+        <div class="wf-temp">${maxTemp}° / ${minTemp}°</div>`;
 
         wfContainer.appendChild(wfItem);
-      
+      }
+      //if it is the time of day where only 5 children and header appear then change css height of item
+      if (wfContainer.children.length === 6) {
+        let wfItems = document.querySelectorAll(".wf-item");
+        wfItems.forEach((item) => {
+          item.style.height = "17.2%";
+        });
       }
     },
   });
@@ -362,33 +361,27 @@ function stringArrToWordArr(stringArray) {
   return splitCopy;
 }
 
-function filterStringArr(validArray, invalidArr){
-
+function filterStringArr(validArray, invalidArr) {
   let copyInvalidArr = [...invalidArr];
 
   let filteredArr = copyInvalidArr.filter((word) => validArray.includes(word));
 
   return filteredArr;
-  
 }
 
-function countWordsInArr(array){
+function countWordsInArr(array) {
+  let copyArr = [...array];
 
-let copyArr = [...array];
+  let countObj = {};
 
-let countObj = {};
-
-for (let word of copyArr){
-
-  if (!countObj.hasOwnProperty(word)){
-    countObj[word] = 1;
-  } else {
-    countObj[word] += 1;
+  for (let word of copyArr) {
+    if (!countObj.hasOwnProperty(word)) {
+      countObj[word] = 1;
+    } else {
+      countObj[word] += 1;
+    }
   }
-  
-}
-return countObj;
-
+  return countObj;
 }
 
 function getKeyWithHighestVal(obj) {
@@ -410,27 +403,80 @@ function getKeyWithHighestVal(obj) {
   return maxKey;
 }
 
+function sortObjectByOrderStartingFromToday(obj) {
+  let order = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  let dateInstance = new Date();
+  let today = dateInstance.getDay();
+
+  let sortedObj = {};
+
+  // Start from the current day and add keys in order
+  for (let i = today; i < order.length; i++) {
+    let day = order[i];
+    if (obj.hasOwnProperty(day)) {
+      sortedObj[day] = obj[day];
+    }
+  }
+
+  // Continue adding keys from the beginning of the week
+  for (let i = 0; i < today; i++) {
+    let day = order[i];
+    if (obj.hasOwnProperty(day)) {
+      sortedObj[day] = obj[day];
+    }
+  }
+
+  return sortedObj;
+}
+
+let testObj = {
+  Monday: 0,
+  Friday: 1,
+  Thursday: 0,
+  Tuesday: 1,
+  Saturday: 0,
+  Wednesday: 2,
+  Sunday: 3,
+};
+
+// console.log('I am', sortObjectByOrderStartingFromToday(testObj))
+
+// TODO://
+// find out what day it is
+//will need to call getDayOfWeek(today) to figure out which day to start painting info
+// let dateInstance = new Date();
+// let today = getDayOfWeek(dateInstance);
+
+// console.log(organizeKeysFromToday(wfDataObj))
+
 //TODO:// autocomplete for searching city!
 
 //TODO:// center the air condition icon and word
 
-      //TODO:// implement geolocation?
-      // if (navigator.geolocation) {
-      //   navigator.geolocation.getCurrentPosition(function(position) {
-      //     const latitude = position.coords.latitude;
-      //     const longitude = position.coords.longitude;
-      //     console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-      //   });
-      // } else {
-      //   console.log("Geolocation is not supported by this browser.");
-      // }
+//TODO:// implement geolocation?
+// if (navigator.geolocation) {
+//   navigator.geolocation.getCurrentPosition(function(position) {
+//     const latitude = position.coords.latitude;
+//     const longitude = position.coords.longitude;
+//     console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+//   });
+// } else {
+//   console.log("Geolocation is not supported by this browser.");
+// }
 
-      //TODO:// Reverse geocoding to get city name by lat and long
+//TODO:// Reverse geocoding to get city name by lat and long
 
-      // 7 day api?
-      //
+// 7 day api?
+//
 
+//TODO:// styling for air conditions
 
-      //TODO:// styling for air conditions
-
-      //TODO:// onhover scale 1.2 for tf svgs
+//TODO:// onhover scale 1.2 for tf svgs
