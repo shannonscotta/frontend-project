@@ -1,4 +1,4 @@
-# frontend-project
+# Frontend-project
 
 frontend project using Vanilla JS, event listeners, and AJAX
 
@@ -11,11 +11,12 @@ frontend project using Vanilla JS, event listeners, and AJAX
 
 ### Learning points
 
-- Spend a long time looking at the JSON object from the API, figure out what you're going to need and then extract it in a asap.
-- whatthefont
+- Spend a long time looking at the JSON object from the API, figure out what you'll need, and then extract it in ASAP.
+- whatthefont to find fonts
+- Mac's built-in "digital color meter" to find hex / rgb values
 - SVG's from https://www.svgrepo.com/
 - use https://flexboxfroggy.com/ religiously, skip through to go to the one you're trying to apply
-- change background color or add border color when tweaking styles, to easily see the parent container
+- change the background color or add border color when tweaking styles to see the parent container easily
 
 ### Future additions
 
