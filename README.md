@@ -1,6 +1,8 @@
 # Frontend-project
+https://shannonscotta.github.io/frontend-project/
 
-frontend project using Vanilla JS, event listeners, and AJAX
+Frontend project using Vanilla JS, event listeners, and AJAX
+
 
 ## Weather App
 
