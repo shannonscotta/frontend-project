@@ -299,11 +299,7 @@ function militaryToNormalTime(militaryTime) {
   if (clockHours == 12){
     return clockHours + ":00 " + period;
   } else {
-<<<<<<< HEAD
-    return "&nbsp" + clockHours + ":00 " + period;
-=======
     return "&nbsp&nbsp" + clockHours + ":00 " + period;
->>>>>>> a538f9c (cleaned up for larger display)
   }
 
 }
