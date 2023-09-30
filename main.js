@@ -191,10 +191,7 @@ function requestWeather(api, city, KEY, units) {
       //sort object by day before appending to the DOM
       let wfDataObj = sortObjectByOrderStartingFromToday(weekObj);
 
-      //  if (wfDataObj['Monday']){
-      //   delete wfDataObj['Monday'];
-      //  }
-
+      
       // grab wf container
       let wfContainer = document.querySelector(".week-forecast-container");
 
@@ -299,8 +296,12 @@ function militaryToNormalTime(militaryTime) {
   let clockHours = hours;
 
   if (hours >= 13) clockHours -= 12;
+  if (clockHours == 12){
+    return clockHours + ":00 " + period;
+  } else {
+    return "&nbsp" + clockHours + ":00 " + period;
+  }
 
-  return clockHours + ":00 " + period;
 }
 
 function removeAllChildren(parent) {
@@ -436,6 +437,10 @@ function sortObjectByOrderStartingFromToday(obj) {
       sortedObj[day] = obj[day];
     }
   }
+
+  // if (sortedObj[today]){
+  //   delete sortedObj[today];
+  //  }
 
   return sortedObj;
 }
